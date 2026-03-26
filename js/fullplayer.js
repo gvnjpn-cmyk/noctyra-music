@@ -271,6 +271,16 @@ const FullPlayer = (() => {
     document.getElementById('fp-prev')?.addEventListener('click', Player.prev);
     document.getElementById('fp-next')?.addEventListener('click', Player.next);
 
+    // Download / save offline
+    document.getElementById('fp-download-btn')?.addEventListener('click', () => {
+      const queue = Player.getQueue();
+      const idx   = Player.getIndex();
+      if (idx >= 0 && queue[idx]) {
+        Offline.addSong(queue[idx]);
+        document.getElementById('fp-download-btn').classList.add('saved');
+      }
+    });
+
     // Shuffle
     document.getElementById('fp-shuffle')?.addEventListener('click', () => {
       isShuffle = !isShuffle;

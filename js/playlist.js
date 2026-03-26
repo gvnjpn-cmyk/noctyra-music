@@ -224,7 +224,7 @@ const Playlist = (() => {
     modal.classList.add('active');
     overlay.classList.add('active');
     input.value = '';
-    input.focus();
+    setTimeout(() => input.focus(), 50);
   }
 
   function hideCreateModal() {
@@ -233,11 +233,12 @@ const Playlist = (() => {
   }
 
   // Show "add to playlist" picker for a song
+  let _pendingSong = null;
   function showAddToPlaylist(song) {
+    _pendingSong = song;
     const playlists = load();
     if (!playlists.length) {
-      const create = confirm('Belum ada playlist. Buat playlist baru?');
-      if (create) showCreateModal();
+      if (confirm('Belum ada playlist. Buat playlist baru?')) showCreateModal();
       return;
     }
 
@@ -254,13 +255,16 @@ const Playlist = (() => {
       </button>
     `).join('');
 
-    list.querySelectorAll('.add-song-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const added = addSong(btn.dataset.id, song);
-        showToast(added ? '✓ Ditambahkan ke playlist' : 'Lagu sudah ada di playlist');
-        hideAddSongModal();
-      });
-    });
+    // Use event delegation to avoid listener timing issue
+    list.onclick = (e) => {
+      const btn = e.target.closest('.add-song-item');
+      if (!btn || !_pendingSong) return;
+      e.stopPropagation();
+      const added = addSong(btn.dataset.id, _pendingSong);
+      showToast(added ? '✓ Ditambahkan ke playlist' : 'Lagu sudah ada di playlist');
+      _pendingSong = null;
+      hideAddSongModal();
+    };
 
     modal.classList.add('active');
     overlay.classList.add('active');
