@@ -1,26 +1,26 @@
 // ============================================================
-// NOCTYRA MUSIC — CONFIG
-// Fill in your API keys before deploying
+// NOCTYRA MUSIC — CONFIG v5
 // ============================================================
 
 const CONFIG = {
   // ── YouTube Data API v3 ──────────────────────────────────
-  // Get key: https://console.cloud.google.com → Enable YouTube Data API v3
   YOUTUBE_API_KEY: 'AIzaSyB065PpjmiBiXx9XFj5o0ueMHzEwQy98_E',
-  YT_SEARCH_URL: 'https://www.googleapis.com/youtube/v3/search',
-  YT_MAX_RESULTS: 20,
+  YT_SEARCH_URL:   'https://www.googleapis.com/youtube/v3/search',
+  YT_MAX_RESULTS:  20,
 
-  // ── Claude (Anthropic) API ───────────────────────────────
-  // Get key: https://console.anthropic.com
-  CLAUDE_API_KEY: 'YOUR_CLAUDE_API_KEY_HERE',
-  CLAUDE_API_URL: 'https://api.anthropic.com/v1/messages',
-  CLAUDE_MODEL: 'claude-sonnet-4-20250514',
+  // ── OpenRouter API (replaces Claude direct) ─────────────
+  // Get key: https://openrouter.ai → free tier available
+  OPENROUTER_API_KEY: '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',
+  OPENROUTER_URL:     'https://openrouter.ai/api/v1/chat/completions',
+  OPENROUTER_MODEL:   'google/gemini-flash-1.5', // free model
 
-  // ── Search Behavior ──────────────────────────────────────
+  // ── Search ───────────────────────────────────────────────
   SEARCH_DEBOUNCE_MS: 500,
-  CACHE_TTL_MS: 5 * 60 * 1000, // 5 minutes
+  CACHE_TTL_MS:       5 * 60 * 1000,
 
   // ── LocalStorage Keys ────────────────────────────────────
   STORAGE_PLAYLISTS: 'noctyra_playlists',
-  STORAGE_HISTORY: 'noctyra_history',
+  STORAGE_HISTORY:   'noctyra_history',
+  STORAGE_OFFLINE:   'noctyra_offline',
+  STORAGE_LIKES:     'noctyra_likes',
 };
