@@ -10,7 +10,7 @@ const CONFIG = {
 
   // ── OpenRouter API (replaces Claude direct) ─────────────
   // Get key: https://openrouter.ai → free tier available
-  OPENROUTER_API_KEY: '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',
+  OPENROUTER_API_KEY: '',
   OPENROUTER_URL:     'https://openrouter.ai/api/v1/chat/completions',
   OPENROUTER_MODEL:   'google/gemini-flash-1.5', // free model
 
