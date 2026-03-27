@@ -13,7 +13,7 @@ const CONFIG = {
 
   // ── OpenRouter Model ─────────────────────────────────────
   // Model ini dikirim ke proxy, bukan key-nya
-  OPENROUTER_MODEL: 'google/gemini-flash-1.5',
+  OPENROUTER_MODEL: 'google/gemini-1.5-flash',
 
   // ── Search ───────────────────────────────────────────────
   SEARCH_DEBOUNCE_MS: 500,
