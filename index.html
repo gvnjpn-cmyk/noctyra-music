@@ -132,18 +132,20 @@
     <button class="fp-ctrl-side" id="fp-repeat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
   </div>
   <div class="fp-tabs">
-    <button class="fp-tab-btn" id="fp-tab-queue" data-tab="queue">SELANJUTNYA</button>
+    <button class="fp-tab-btn active" id="fp-tab-queue" data-tab="queue">SELANJUTNYA</button>
     <button class="fp-tab-btn" id="fp-tab-lyrics" data-tab="lyrics">LIRIK</button>
     <button class="fp-tab-btn" id="fp-tab-related" data-tab="related">TERKAIT</button>
   </div>
   <div class="fp-tab-content" id="fp-tab-content">
-    <div class="fp-pane" id="fp-pane-queue"></div>
-    <div class="fp-pane" id="fp-pane-lyrics">
-      <div class="fp-lyrics-loading" id="fp-lyrics-loading" style="display:none"><div class="spinner"></div><span>Mencari lirik...</span></div>
-      <div id="fp-lyrics-text"></div>
-      <p id="fp-lyrics-empty" style="display:none" class="fp-lyrics-empty">Lirik tidak ditemukan untuk lagu ini.</p>
+    <div class="fp-swipe-track" id="fp-swipe-track">
+      <div class="fp-pane" id="fp-pane-queue"></div>
+      <div class="fp-pane" id="fp-pane-lyrics">
+        <div class="fp-lyrics-loading" id="fp-lyrics-loading" style="display:none"><div class="spinner"></div><span>Mencari lirik...</span></div>
+        <div id="fp-lyrics-text"></div>
+        <p id="fp-lyrics-empty" style="display:none" class="fp-lyrics-empty">Lirik tidak ditemukan.</p>
+      </div>
+      <div class="fp-pane" id="fp-pane-related"></div>
     </div>
-    <div class="fp-pane" id="fp-pane-related"></div>
   </div>
 </div>
 
