@@ -8,72 +8,44 @@ const AI = (() => {
   let isLoading   = false;
   let chatHistory = []; // for sidebar chat
 
-  // ── OpenRouter API Call ──────────────────────────────────
+  // ── OpenRouter via Netlify Proxy ────────────────────────
   async function callAI(systemPrompt, userMessage, jsonMode = false) {
-    const key = CONFIG.OPENROUTER_API_KEY;
-    if (!key || key === 'YOUR_OPENROUTER_API_KEY_HERE') {
-      throw new Error('OpenRouter API key belum diset. Daftar gratis di openrouter.ai');
-    }
-
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      { role: 'user',   content: userMessage  },
-    ];
-
-    const res = await fetch(CONFIG.OPENROUTER_URL, {
+    const res = await fetch(CONFIG.AI_API, {
       method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${key}`,
-        'HTTP-Referer':  location.origin,
-        'X-Title':       'Noctyra Music',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model:       CONFIG.OPENROUTER_MODEL,
-        max_tokens:  1200,
-        messages,
+        model:    CONFIG.OPENROUTER_MODEL,
+        max_tokens: 1200,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userMessage  },
+        ],
         ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
       }),
     });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `OpenRouter error ${res.status}`);
+      throw new Error(err.error?.message || `AI error ${res.status}`);
     }
-
     const data = await res.json();
     return data.choices?.[0]?.message?.content || '';
   }
 
-  // ── Chat API (multi-turn) ────────────────────────────────
+  // ── Chat API (multi-turn) via proxy ─────────────────────
   async function callChat(userMessage) {
-    const key = CONFIG.OPENROUTER_API_KEY;
-    if (!key || key === 'YOUR_OPENROUTER_API_KEY_HERE') {
-      throw new Error('OpenRouter API key belum diset di config.js');
-    }
-
     chatHistory.push({ role: 'user', content: userMessage });
 
     const systemMsg = {
       role: 'system',
-      content: `Kamu adalah Noctyra AI, asisten musik yang ramah dan cerdas untuk Noctyra Music app.
-Kamu bisa:
-- Merekomendasikan lagu dan artis
-- Menjawab pertanyaan tentang musik
-- Membantu user menemukan lagu berdasarkan mood
-- Memberikan info tentang genre, artis, album
-Jawab dalam bahasa yang sama dengan user (Indonesia/Inggris).
-Jawaban singkat dan to the point. Gunakan emoji sesekali.`
+      content: `Kamu adalah Noctyra AI, asisten musik yang ramah untuk Noctyra Music app.
+Kamu bisa merekomendasikan lagu, menjawab pertanyaan musik, dan membantu user.
+Jawab dalam bahasa yang sama dengan user. Singkat dan to the point. Gunakan emoji sesekali.`
     };
 
-    const res = await fetch(CONFIG.OPENROUTER_URL, {
+    const res = await fetch(CONFIG.AI_API, {
       method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${key}`,
-        'HTTP-Referer':  location.origin,
-        'X-Title':       'Noctyra Music',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model:      CONFIG.OPENROUTER_MODEL,
         max_tokens: 600,
@@ -82,13 +54,13 @@ Jawaban singkat dan to the point. Gunakan emoji sesekali.`
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
       chatHistory.pop();
-      throw new Error(err.error?.message || `Error ${res.status}`);
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `AI error ${res.status}`);
     }
 
-    const data   = await res.json();
-    const reply  = data.choices?.[0]?.message?.content || '...';
+    const data  = await res.json();
+    const reply = data.choices?.[0]?.message?.content || '...';
     chatHistory.push({ role: 'assistant', content: reply });
     return reply;
   }

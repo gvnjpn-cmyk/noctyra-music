@@ -134,16 +134,11 @@ const App = (() => {
   async function fetchTrending() {
     const container = document.getElementById('trending-list');
     if (!container) return;
-    if (!CONFIG.YOUTUBE_API_KEY || CONFIG.YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
-      container.innerHTML = '';
-      return;
-    }
     try {
-      const params = new URLSearchParams({ part:'snippet', chart:'mostPopular', videoCategoryId:'10', regionCode:'ID', maxResults:'15', key:CONFIG.YOUTUBE_API_KEY });
-      const res    = await fetch(`https://www.googleapis.com/youtube/v3/videos?${params}`);
+      const res  = await fetch(`${CONFIG.YT_API}?type=trending`);
       if (!res.ok) throw new Error();
-      const data   = await res.json();
-      const songs  = (data.items||[]).map(item => ({
+      const data = await res.json();
+      const songs = (data.items||[]).map(item => ({
         videoId:   item.id,
         title:     item.snippet.title,
         channel:   item.snippet.channelTitle,

@@ -1,18 +1,19 @@
 // ============================================================
-// NOCTYRA MUSIC — CONFIG v5
+// NOCTYRA MUSIC — CONFIG v6
+// API keys TIDAK disimpan di sini.
+// Semua request lewat Netlify Functions (server-side proxy).
+// Set key di: Netlify Dashboard → Site → Environment Variables
 // ============================================================
 
 const CONFIG = {
-  // ── YouTube Data API v3 ──────────────────────────────────
-  YOUTUBE_API_KEY: 'AIzaSyB065PpjmiBiXx9XFj5o0ueMHzEwQy98_E',
-  YT_SEARCH_URL:   'https://www.googleapis.com/youtube/v3/search',
-  YT_MAX_RESULTS:  20,
+  // ── API Endpoints (proxy ke Netlify Functions) ───────────
+  YT_API:        '/.netlify/functions/youtube',
+  AI_API:        '/.netlify/functions/ai',
+  YT_MAX_RESULTS: 20,
 
-  // ── OpenRouter API (replaces Claude direct) ─────────────
-  // Get key: https://openrouter.ai → free tier available
-  OPENROUTER_API_KEY: '',
-  OPENROUTER_URL:     'https://openrouter.ai/api/v1/chat/completions',
-  OPENROUTER_MODEL:   'google/gemini-flash-1.5', // free model
+  // ── OpenRouter Model ─────────────────────────────────────
+  // Model ini dikirim ke proxy, bukan key-nya
+  OPENROUTER_MODEL: 'google/gemini-flash-1.5',
 
   // ── Search ───────────────────────────────────────────────
   SEARCH_DEBOUNCE_MS: 500,

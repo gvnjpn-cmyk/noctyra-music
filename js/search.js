@@ -65,38 +65,27 @@ const Search = (() => {
     return `${raw} official audio`;
   }
 
-  // ── YouTube API Call ─────────────────────────────────────
+  // ── YouTube API Call (via Netlify proxy) ─────────────────
   async function fetchYoutube(rawQuery) {
     const query = smartTransform(rawQuery);
     console.log(`[Search] Query: "${rawQuery}" → "${query}"`);
 
-    // Check cache
     const cached = getCached(query);
-    if (cached) {
-      console.log('[Search] Cache hit');
-      return cached;
-    }
-
-    if (!CONFIG.YOUTUBE_API_KEY || CONFIG.YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE') {
-      throw new Error('YouTube API key not configured. Set CONFIG.YOUTUBE_API_KEY in js/config.js');
-    }
+    if (cached) { console.log('[Search] Cache hit'); return cached; }
 
     const params = new URLSearchParams({
-      part:       'snippet',
-      q:          query,
-      type:       'video',
-      videoCategoryId: '10', // Music category
-      maxResults:  CONFIG.YT_MAX_RESULTS,
-      key:         CONFIG.YOUTUBE_API_KEY,
+      type: 'search',
+      q:    query,
+      maxResults: CONFIG.YT_MAX_RESULTS,
     });
 
-    const res = await fetch(`${CONFIG.YT_SEARCH_URL}?${params}`);
+    const res = await fetch(`${CONFIG.YT_API}?${params}`);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error?.message || `YouTube API error ${res.status}`);
     }
 
-    const data = await res.json();
+    const data    = await res.json();
     const results = (data.items || []).map(item => ({
       videoId:   item.id.videoId,
       title:     item.snippet.title,
