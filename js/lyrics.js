@@ -1,6 +1,6 @@
 // ============================================================
-// NOCTYRA MUSIC — LYRICS MODULE v3
-// Sources: lrclib.net → lyrics.ovh → genius scrape fallback
+// NOCTYRA MUSIC — LYRICS MODULE v4
+// Better cleaning + more search strategies for Indo songs
 // ============================================================
 
 const Lyrics = (() => {
@@ -11,19 +11,18 @@ const Lyrics = (() => {
       .replace(/\(official.*?\)/gi,'').replace(/\[official.*?\]/gi,'')
       .replace(/\(lyric.*?\)/gi,'').replace(/\[lyric.*?\]/gi,'')
       .replace(/\(audio.*?\)/gi,'').replace(/\(mv.*?\)/gi,'')
-      .replace(/\(music video.*?\)/gi,'')
-      .replace(/official|lyric|audio|video|hd|4k|remaster|vevo|records/gi,'')
+      .replace(/\(music video.*?\)/gi,'').replace(/\(video.*?\)/gi,'')
+      .replace(/official|lyric|audio|video|hd|4k|remaster|vevo|records|musik/gi,'')
       .replace(/feat\..*$/gi,'').replace(/ft\..*$/gi,'')
-      .replace(/[-–|×x].*$/, '')
+      .replace(/\s*[-–|×x]\s*.*$/, '')
       .replace(/\s+/g,' ').trim();
   }
 
-  // Strip Roman numerals, episode numbers, etc from channel names
-  function cleanArtist(channel) {
-    return channel
+  function cleanArtist(ch) {
+    return ch
       .replace(/VEVO$/i,'').replace(/Official$/i,'')
-      .replace(/Music$/i,'').replace(/Records$/i,'')
-      .replace(/Channel$/i,'').replace(/TV$/i,'')
+      .replace(/Music$/i,'').replace(/ Records$/i,'')
+      .replace(/ TV$/i,'').replace(/ Channel$/i,'')
       .replace(/\s+/g,' ').trim();
   }
 
@@ -62,26 +61,29 @@ const Lyrics = (() => {
     const key     = `${channel}::${title}`.toLowerCase();
     if (cache.has(key)) return cache.get(key);
 
-    // Strategy 1: lrclib with artist
-    let lyrics = await fromLrclib(title, channel);
+    // Try multiple strategies
+    let lyrics = null;
 
-    // Strategy 2: lrclib title only (flexible for Indo songs)
+    // 1. lrclib with artist
+    lyrics = await fromLrclib(title, channel);
+
+    // 2. lrclib title only
     if (!lyrics) lyrics = await fromLrclib(title, '');
 
-    // Strategy 3: Try first word of channel as artist
-    if (!lyrics && channel.includes(' ')) {
-      const shortArtist = channel.split(' ')[0];
-      lyrics = await fromLrclib(title, shortArtist);
-    }
+    // 3. First word of channel as artist
+    if (!lyrics && channel.includes(' '))
+      lyrics = await fromLrclib(title, channel.split(' ')[0]);
 
-    // Strategy 4: lyrics.ovh fallback
+    // 4. lyrics.ovh
     if (!lyrics && channel) lyrics = await fromLyricsOvh(title, channel);
+
+    // 5. lyrics.ovh swapped
+    if (!lyrics) lyrics = await fromLyricsOvh(channel, title);
 
     cache.set(key, lyrics);
     return lyrics;
   }
 
   function init() {}
-
   return { init, fetchFor };
 })();

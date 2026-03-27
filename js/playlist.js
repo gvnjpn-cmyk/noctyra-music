@@ -255,16 +255,20 @@ const Playlist = (() => {
       </button>
     `).join('');
 
-    // Use event delegation to avoid listener timing issue
-    list.onclick = (e) => {
+    // Use mousedown instead of click to beat overlay's click handler
+    list.onmousedown = list.ontouchstart = (e) => {
       const btn = e.target.closest('.add-song-item');
       if (!btn || !_pendingSong) return;
+      e.preventDefault();
       e.stopPropagation();
       const added = addSong(btn.dataset.id, _pendingSong);
       showToast(added ? '✓ Ditambahkan ke playlist' : 'Lagu sudah ada di playlist');
       _pendingSong = null;
       hideAddSongModal();
     };
+
+    // Stop overlay click from closing before list registers
+    modal.onmousedown = modal.ontouchstart = (e) => e.stopPropagation();
 
     modal.classList.add('active');
     overlay.classList.add('active');
