@@ -13,7 +13,7 @@ const CONFIG = {
 
   // ── OpenRouter Model ─────────────────────────────────────
   // Model ini dikirim ke proxy, bukan key-nya
-  OPENROUTER_MODEL: 'meta-llama/llama-3.1-8b-instruct:free',
+  OPENROUTER_MODEL: 'openai/gpt-4o-mini',
 
   // ── Search ───────────────────────────────────────────────
   SEARCH_DEBOUNCE_MS: 500,
