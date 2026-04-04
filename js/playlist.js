@@ -16,12 +16,13 @@ const Playlist = (() => {
   }
 
   // ── CRUD ─────────────────────────────────────────────────
-  function create(name) {
+  function create(name, coverUrl = '') {
     if (!name.trim()) return null;
     const playlists = load();
     const pl = {
       id:    Date.now().toString(),
       name:  name.trim(),
+      cover: coverUrl || '',
       songs: [],
       createdAt: Date.now(),
     };
@@ -114,7 +115,7 @@ const Playlist = (() => {
         ${playlists.map(pl => `
           <div class="playlist-card" data-id="${pl.id}">
             <div class="playlist-card__cover">
-              ${pl.songs[0] ? `<img src="${pl.songs[0].thumbnail}" loading="lazy" alt="">` : `
+              ${pl.cover || pl.songs[0] ? `<img src="${pl.cover || pl.songs[0].thumbnail}" loading="lazy" alt="">` : `
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                   <path d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/>
                 </svg>
@@ -220,7 +221,15 @@ const Playlist = (() => {
     const modal   = document.getElementById('modal-create-playlist');
     const overlay = document.getElementById('modal-overlay');
     const input   = document.getElementById('playlist-name-input');
+    const preview = document.getElementById('playlist-cover-preview');
     if (!modal) return;
+    // Reset cover
+    if (preview) {
+      preview.style.backgroundImage = '';
+      preview.dataset.cover = '';
+      preview.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg><span>Foto Cover</span>`;
+    }
+    if (document.getElementById('playlist-cover-url')) document.getElementById('playlist-cover-url').value = '';
     modal.classList.add('active');
     overlay.classList.add('active');
     input.value = '';
@@ -284,13 +293,42 @@ const Playlist = (() => {
     renderSidebar();
     renderLibrary();
 
+    // Cover photo picker
+    const coverPreview = document.getElementById('playlist-cover-preview');
+    const coverFile    = document.getElementById('playlist-cover-file');
+    const coverUrl     = document.getElementById('playlist-cover-url');
+
+    coverPreview?.addEventListener('click', () => coverFile?.click());
+    coverFile?.addEventListener('change', () => {
+      const file = coverFile.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        coverPreview.style.backgroundImage = `url(${e.target.result})`;
+        coverPreview.style.backgroundSize  = 'cover';
+        coverPreview.innerHTML = '';
+        coverPreview.dataset.cover = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+    coverUrl?.addEventListener('input', () => {
+      const url = coverUrl.value.trim();
+      if (url) {
+        coverPreview.style.backgroundImage = `url(${url})`;
+        coverPreview.style.backgroundSize  = 'cover';
+        coverPreview.innerHTML = '';
+        coverPreview.dataset.cover = url;
+      }
+    });
+
     // Create playlist button (sidebar)
     document.getElementById('btn-new-playlist')?.addEventListener('click', showCreateModal);
 
     // Modal confirm
     document.getElementById('btn-confirm-create')?.addEventListener('click', () => {
-      const name = document.getElementById('playlist-name-input')?.value;
-      if (create(name)) {
+      const name  = document.getElementById('playlist-name-input')?.value;
+      const cover = document.getElementById('playlist-cover-preview')?.dataset.cover || '';
+      if (create(name, cover)) {
         hideCreateModal();
         showToast('✓ Playlist dibuat');
         renderLibrary();
@@ -306,11 +344,12 @@ const Playlist = (() => {
       AI.hideModal();
     });
 
-    // Enter key in playlist name input
+    // Enter key
     document.getElementById('playlist-name-input')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        const name = e.target.value;
-        if (create(name)) {
+        const name  = e.target.value;
+        const cover = document.getElementById('playlist-cover-preview')?.dataset.cover || '';
+        if (create(name, cover)) {
           hideCreateModal();
           showToast('✓ Playlist dibuat');
           renderLibrary();
