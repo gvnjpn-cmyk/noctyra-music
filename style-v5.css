@@ -422,6 +422,10 @@
 /* ── Lyrics Page ─────────────────────────────────────────── */
 .fp-lyrics-page {
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 .fp-lyrics-header {
   display: flex;
@@ -452,7 +456,11 @@
 }
 .fp-lyrics-body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   padding: 20px 24px 60px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.15) transparent;
@@ -501,29 +509,19 @@
 .fp-qpane.active { display: block; }
 
 /* ── Tab content (queue preview in player page) ──────────── */
-.fp-tab-content {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
+.fp-tab-content { flex: 1; overflow: hidden; min-height: 0; }
 .fp-swipe-track {
   display: flex;
   width: 200%;
   height: 100%;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-/* fp-pane: scroll ada di sini, bukan di fp-tab-content */
 .fp-swipe-track .fp-pane {
   width: 50%;
   flex-shrink: 0;
-  height: 100% !important;
   overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
   padding: 8px 0 20px;
   scrollbar-width: none;
-  box-sizing: border-box;
 }
 .fp-swipe-track .fp-pane::-webkit-scrollbar { display: none; }
 
