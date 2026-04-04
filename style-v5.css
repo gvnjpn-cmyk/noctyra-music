@@ -545,15 +545,16 @@
 }
 .playlist-cover-preview:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ── Fix fullscreen player height ────────────────────────── */
+/* ── Fix fullscreen player ───────────────────────────────── */
 #fullscreen-player {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  position: fixed !important;
+  inset: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  z-index: 600 !important;
 }
-/* fp-page-dots needs to be above pages-track */
-#fullscreen-player { position: fixed; }
-.fp-pages-track { flex: 1; }
+.fp-pages-track { flex: 1; overflow: hidden; }
 
 /* ── Queue row "playing" title ───────────────────────────── */
 .fp-queue-title.playing { color: var(--accent); }
