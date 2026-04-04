@@ -1471,15 +1471,27 @@ body.is-playing .fp-art { transform: scale(1.02); }
 /* Tab Content Area */
 .fp-tab-content {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 12px 0 env(safe-area-inset-bottom, 20px);
+  min-height: 0;           /* ← biar bisa shrink di flex column */
+  overflow: hidden;        /* ← container sendiri tidak scroll */
+  padding: 0;
   scrollbar-width: none;
 }
 .fp-tab-content::-webkit-scrollbar { display: none; }
 
+/* Pane tidak aktif: sembunyi */
 .fp-pane { display: none; }
-.fp-pane.active { display: block; }
+/* Pane aktif: DIA yang scroll, bukan parent-nya */
+.fp-pane.active {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 0 env(safe-area-inset-bottom, 20px);
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.fp-pane.active::-webkit-scrollbar { display: none; }
 
 /* Queue pane */
 #fp-pane-queue .song-card {
