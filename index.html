@@ -105,48 +105,136 @@
   </nav>
 </div>
 
-<!-- FULLSCREEN PLAYER -->
+<!-- FULLSCREEN PLAYER — 3 horizontal pages: Player | Lyrics | Queue+Related -->
 <div id="fullscreen-player">
-  <div class="fp-bg" id="fp-bg"></div><div class="fp-bg-overlay"></div>
-  <div class="fp-header">
-    <button class="fp-btn-icon" id="fp-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="24" height="24"><polyline points="6 9 12 15 18 9"/></svg></button>
-    <div class="fp-header-center"><p class="fp-header-label">SEDANG DIPUTAR</p></div>
-    <button class="fp-btn-icon" id="fp-download-btn" title="Simpan Offline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+  <!-- Shared blurred background -->
+  <div class="fp-bg" id="fp-bg"></div>
+  <div class="fp-bg-overlay"></div>
+
+  <!-- Page indicator dots -->
+  <div class="fp-page-dots">
+    <span class="fp-dot active" data-page="0"></span>
+    <span class="fp-dot" data-page="1"></span>
+    <span class="fp-dot" data-page="2"></span>
   </div>
-  <div class="fp-art-wrapper"><div class="fp-art-shadow"></div><img class="fp-art" id="fp-art" src="" alt="Album art"></div>
-  <div class="fp-info-row">
-    <div class="fp-info"><p class="fp-title" id="fp-title">—</p><p class="fp-artist" id="fp-artist">—</p></div>
-    <button class="fp-like-btn" id="fp-like"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-  </div>
-  <div class="fp-progress-section">
-    <div class="fp-progress-bar" id="fp-progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      <div class="fp-progress-fill" id="fp-progress-fill"><div class="fp-progress-dot"></div></div>
-    </div>
-    <div class="fp-times"><span id="fp-time-current">0:00</span><span id="fp-time-duration">0:00</span></div>
-  </div>
-  <div class="fp-controls">
-    <button class="fp-ctrl-side" id="fp-shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg></button>
-    <button class="fp-ctrl-main" id="fp-prev"><svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><polygon points="19,20 9,12 19,4"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"/></svg></button>
-    <button class="fp-play-btn" id="fp-play"><svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30"><polygon points="5,3 19,12 5,21"/></svg></button>
-    <button class="fp-ctrl-main" id="fp-next"><svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><polygon points="5,4 15,12 5,20"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/></svg></button>
-    <button class="fp-ctrl-side" id="fp-repeat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
-  </div>
-  <div class="fp-tabs">
-    <button class="fp-tab-btn active" id="fp-tab-queue" data-tab="queue">SELANJUTNYA</button>
-    <button class="fp-tab-btn" id="fp-tab-lyrics" data-tab="lyrics">LIRIK</button>
-    <button class="fp-tab-btn" id="fp-tab-related" data-tab="related">TERKAIT</button>
-  </div>
-  <div class="fp-tab-content" id="fp-tab-content">
-    <div class="fp-swipe-track" id="fp-swipe-track">
-      <div class="fp-pane" id="fp-pane-queue"></div>
-      <div class="fp-pane" id="fp-pane-lyrics">
-        <div class="fp-lyrics-loading" id="fp-lyrics-loading" style="display:none"><div class="spinner"></div><span>Mencari lirik...</span></div>
-        <div id="fp-lyrics-text"></div>
-        <p id="fp-lyrics-empty" style="display:none" class="fp-lyrics-empty">Lirik tidak ditemukan.</p>
+
+  <!-- Horizontal swipe container -->
+  <div class="fp-pages-track" id="fp-pages-track">
+
+    <!-- PAGE 0: PLAYER -->
+    <div class="fp-page" id="fp-page-player">
+      <div class="fp-header">
+        <button class="fp-btn-icon" id="fp-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fp-header-center"><p class="fp-header-label">SEDANG DIPUTAR</p></div>
+        <div class="fp-header-actions">
+          <button class="fp-btn-icon" id="fp-add-playlist-btn" title="Tambah ke Playlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+          <button class="fp-btn-icon" id="fp-download-btn" title="Simpan Offline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="fp-pane" id="fp-pane-related"></div>
+
+      <div class="fp-art-wrapper">
+        <div class="fp-art-shadow"></div>
+        <img class="fp-art" id="fp-art" src="" alt="Album art">
+      </div>
+
+      <div class="fp-info-row">
+        <div class="fp-info">
+          <p class="fp-title" id="fp-title">—</p>
+          <p class="fp-artist" id="fp-artist">—</p>
+        </div>
+        <button class="fp-like-btn" id="fp-like">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="fp-progress-section">
+        <div class="fp-progress-bar" id="fp-progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="fp-progress-fill" id="fp-progress-fill"><div class="fp-progress-dot"></div></div>
+        </div>
+        <div class="fp-times">
+          <span id="fp-time-current">0:00</span>
+          <span id="fp-time-duration">0:00</span>
+        </div>
+      </div>
+
+      <div class="fp-controls">
+        <button class="fp-ctrl-side" id="fp-shuffle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+        </button>
+        <button class="fp-ctrl-main" id="fp-prev">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><polygon points="19,20 9,12 19,4"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"/></svg>
+        </button>
+        <button class="fp-play-btn" id="fp-play">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="30" height="30"><polygon points="5,3 19,12 5,21"/></svg>
+        </button>
+        <button class="fp-ctrl-main" id="fp-next">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><polygon points="5,4 15,12 5,20"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/></svg>
+        </button>
+        <button class="fp-ctrl-side" id="fp-repeat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        </button>
+      </div>
+
+      <!-- Queue preview (bottom of player page) -->
+      <div class="fp-tabs">
+        <button class="fp-tab-btn active" data-tab="queue">SELANJUTNYA</button>
+        <button class="fp-tab-btn" data-tab="related">TERKAIT</button>
+      </div>
+      <div class="fp-tab-content" id="fp-tab-content">
+        <div class="fp-swipe-track" id="fp-swipe-track">
+          <div class="fp-pane" id="fp-pane-queue"></div>
+          <div class="fp-pane" id="fp-pane-related"></div>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- PAGE 1: LYRICS (full page) -->
+    <div class="fp-page fp-lyrics-page" id="fp-page-lyrics">
+      <div class="fp-lyrics-header">
+        <img class="fp-lyrics-art" id="fp-lyrics-art" src="" alt="">
+        <div class="fp-lyrics-meta">
+          <p class="fp-lyrics-title" id="fp-lyrics-title">—</p>
+          <p class="fp-lyrics-artist" id="fp-lyrics-artist">—</p>
+        </div>
+        <div class="fp-lyrics-badge">LIRIK</div>
+      </div>
+      <div class="fp-lyrics-body" id="fp-lyrics-body">
+        <div class="fp-lyrics-loading" id="fp-lyrics-loading" style="display:none">
+          <div class="spinner"></div><span>Mencari lirik...</span>
+        </div>
+        <div class="fp-lyrics-content" id="fp-lyrics-text"></div>
+        <p id="fp-lyrics-empty" style="display:none" class="fp-lyrics-empty">😔 Lirik tidak ditemukan untuk lagu ini.</p>
+      </div>
+    </div>
+
+    <!-- PAGE 2: QUEUE + RELATED combined -->
+    <div class="fp-page fp-queue-page" id="fp-page-queue">
+      <div class="fp-queue-header">
+        <h3>Antrian & Terkait</h3>
+      </div>
+      <div class="fp-queue-tabs">
+        <button class="fp-qtab active" data-qtab="queue">Selanjutnya</button>
+        <button class="fp-qtab" data-qtab="related">Terkait</button>
+      </div>
+      <div class="fp-queue-body">
+        <div class="fp-qpane active" id="fp-qpane-queue"></div>
+        <div class="fp-qpane" id="fp-qpane-related"></div>
+      </div>
+    </div>
+
+  </div><!-- end fp-pages-track -->
 </div>
 
 <!-- AI CHAT SIDEBAR -->
@@ -172,7 +260,16 @@
 <!-- Modals -->
 <div id="modal-create-playlist" class="modal" role="dialog" aria-modal="true">
   <div class="modal-header"><h2 class="modal-title">Buat Playlist Baru</h2><button class="modal-close" id="btn-cancel-create"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-  <div class="modal-input-group"><label class="modal-label" for="playlist-name-input">Nama Playlist</label><input id="playlist-name-input" class="modal-input" type="text" placeholder="Contoh: Lagu Malam..." maxlength="80"></div>
+  <!-- Cover picker -->
+  <div class="playlist-cover-picker" id="playlist-cover-picker">
+    <div class="playlist-cover-preview" id="playlist-cover-preview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M9 19V6l12-3v13M9 19c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm12-3c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z"/></svg>
+      <span>Foto Cover</span>
+    </div>
+    <input type="file" id="playlist-cover-file" accept="image/*" style="display:none">
+    <input type="url" id="playlist-cover-url" class="modal-input" placeholder="Atau tempel URL gambar..." style="margin-top:8px;font-size:12px">
+  </div>
+  <div class="modal-input-group" style="margin-top:12px"><label class="modal-label" for="playlist-name-input">Nama Playlist</label><input id="playlist-name-input" class="modal-input" type="text" placeholder="Contoh: Lagu Malam..." maxlength="80"></div>
   <div class="modal-actions"><button class="btn-ghost" id="btn-cancel-create-2">Batal</button><button class="btn-primary" id="btn-confirm-create">Buat</button></div>
 </div>
 
