@@ -377,12 +377,13 @@
 /* ── Page dots ───────────────────────────────────────────── */
 .fp-page-dots {
   position: absolute;
-  top: 12px;
+  top: env(safe-area-inset-top, 8px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 6px;
   z-index: 10;
+  pointer-events: all;
 }
 .fp-dot {
   width: 5px; height: 5px;
@@ -422,10 +423,6 @@
 /* ── Lyrics Page ─────────────────────────────────────────── */
 .fp-lyrics-page {
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
 }
 .fp-lyrics-header {
   display: flex;
@@ -456,11 +453,7 @@
 }
 .fp-lyrics-body {
   flex: 1;
-  min-height: 0;
   overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
   padding: 20px 24px 60px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.15) transparent;
@@ -545,16 +538,11 @@
 }
 .playlist-cover-preview:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ── Fix fullscreen player ───────────────────────────────── */
-#fullscreen-player {
-  position: fixed !important;
-  inset: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-  z-index: 600 !important;
-}
-.fp-pages-track { flex: 1; overflow: hidden; }
+/* ── Fix fullscreen player — pages track fills remaining height ── */
+.fp-pages-track { flex: 1; min-height: 0; }
+
+/* fp-page-dots positioned above track */
+.fp-page-dots { z-index: 10; }
 
 /* ── Queue row "playing" title ───────────────────────────── */
 .fp-queue-title.playing { color: var(--accent); }
@@ -566,4 +554,107 @@
   .fp-lyrics-body { padding: 16px 16px 80px; }
   .fp-lyrics-content { font-size: 15px; }
   .fp-queue-page { padding: 0 12px; }
+}
+
+/* ============================================================
+   V9 FIX — Fullscreen Player layout override
+   ============================================================ */
+
+/* Force hidden by default — override any conflicting rules */
+#fullscreen-player {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 600 !important;
+  transform: translateY(100%) !important;
+  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  /* Remove grid context */
+  grid-row: unset !important;
+  grid-column: unset !important;
+}
+#fullscreen-player.open {
+  transform: translateY(0) !important;
+}
+
+/* Pages track fills remaining height */
+.fp-pages-track {
+  display: flex !important;
+  width: 300% !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Each page takes 1/3 of track = 100vw */
+.fp-page {
+  width: calc(100% / 3) !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  padding: 0 20px !important;
+}
+
+/* Lyrics & queue pages no padding top */
+.fp-lyrics-page,
+.fp-queue-page { padding: 0 !important; }
+
+/* fp-bg absolutely positioned inside */
+.fp-bg, .fp-bg-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+}
+.fp-bg-overlay { z-index: 1 !important; }
+
+/* All direct children of fp-page above bg */
+.fp-page > *,
+.fp-header,
+.fp-art-wrapper,
+.fp-info-row,
+.fp-progress-section,
+.fp-controls,
+.fp-tabs,
+.fp-tab-content,
+.fp-page-dots {
+  position: relative;
+  z-index: 2;
+}
+
+/* Page dots position */
+.fp-page-dots {
+  position: absolute !important;
+  top: 14px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 10 !important;
+}
+
+/* Tab content flex */
+.fp-tab-content {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Fix player page: header padding-top for dots */
+#fp-page-player > .fp-header {
+  padding-top: 28px !important;
+}
+
+/* Fix lyrics page header top spacing */
+.fp-lyrics-header {
+  padding-top: 44px !important;
+}
+.fp-queue-header {
+  padding-top: 44px !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .fp-page { padding: 0 16px !important; }
+  .fp-lyrics-page, .fp-queue-page { padding: 0 !important; }
 }
